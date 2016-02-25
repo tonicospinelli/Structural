@@ -1,0 +1,54 @@
+{
+    "name": "respect/structural",
+    "description": "Fluent NoSql Toolkit",
+    "version": "0.1.0-dev",
+    "type": "library",
+    "time": "2012-05-05 19:11:23",
+    "homepage": "http://respect.li",
+    "license": "BSD Style",
+    "authors": [
+        {
+            "name": "Alexandre Gomes Gaigalas",
+            "email": "alexandre@gaigalas.net"
+        },
+        {
+            "name": "Claudson Oliveira",
+            "email": "claudsonweb@gmail.com"
+        },
+        {
+            "name": "Fa\u0301bio da Silva Ribeiro",
+            "email": "fabiorphp@gmail.com"
+        },
+        {
+            "name": "Henrique Moody",
+            "email": "henriquemoody@gmail.com"
+        },
+        {
+            "name": "Kinn Coelho Julia\u0303o",
+            "email": "kinncj@gmail.com"
+        },
+        {
+            "name": "Rogerio Prado de Jesus",
+            "email": "rogeriopradoj@gmail.com"
+        },
+        {
+            "name": "Thiago Rigo",
+            "email": "thiagophx@gmail.com"
+        },
+        {
+            "name": "Antonio Spinelli",
+            "email": "tonicospinelli85@gmail.com"
+        }
+    ],
+    "require": {
+        "Respect/Data": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "": "library/"
+        }
+    }
+}
