@@ -39,9 +39,19 @@ class Driver implements BaseDriver
     }
 
     /**
+     * @param \Iterator $cursor
+     * @return array
+     */
+    public function fetch(\Iterator $cursor)
+    {
+        $cursor->next();
+        return $cursor->current();
+    }
+
+    /**
      * @param array $collection
      * @param array $query
-     * @return \MongoCursor
+     * @return \Iterator
      */
     public function find($collection, array $query = array())
     {

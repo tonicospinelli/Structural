@@ -203,12 +203,11 @@ class Mapper extends AbstractMapper implements
         || $entity === $s->composed($next, $parent);
     }
 
-    protected function fetchSingle(Collection $collection, \MongoCursor $statement)
+    protected function fetchSingle(Collection $collection, $statement)
     {
         $name = $collection->getName();
         $entityName = $name;
-        $primaryName = $this->getStyle()->identifier($name);
-        $row = $statement->getNext();
+        $row = $this->driver->fetch($statement);
 
         if (!$row) {
             return false;
