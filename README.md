@@ -2,42 +2,62 @@ Respect/Structural
 ==================
 
 
-```php
-<?php
+### The Near-zero Part
 
+```php
+// bootstrap.php
 require_once __DIR__ . '/vendor/autoload.php';
+
+use Respect\Structural\Mapper;
+use Respect\Structural\Driver\Mongo\Style as MongoStyle;
+use Respect\Structural\Driver\Mongo\Driver as MongoDriver;
 
 $mongoDb = new MongoClient();
 
-$driver = new \Respect\Structural\Driver\Mongo\Driver($mongoDb, 'carmen');
+$driver = new MongoDriver($mongoDb, 'respect');
 
-$mapper = new \Respect\Structural\Mapper($driver, 'respect');
-$mapper->setStyle(new \Respect\Structural\Driver\Mongo\Style());
+$mapper = new Mapper($driver);
+$mapper->setStyle(new MongoStyle());
+```
 
-$authors = $mapper->authors->fetchAll();
-
-echo "Fetching all authors:" . PHP_EOL;
-foreach ($authors as $index => $author) {
-    echo "{$index} {$author->firstName} {$author->lastName}" . PHP_EOL;
-}
-
+### Persisting
+```php
 $author = new \stdClass();
 $author->firstName = 'Antonio';
 $mapper->authors->persist($author);
 $mapper->flush();
 
 echo "'{$author->firstName}' was created with id({$author->_id})".PHP_EOL;
+```
 
+### Updating
+```php
 $author->lastName = 'Spinelli';
 $mapper->authors->persist($author);
 $mapper->flush();
 
 echo "last name was updated to '{$author->lastName}' from id({$author->_id})".PHP_EOL;
+```
 
+### Fetching
+```php
+$authors = $mapper->authors->fetchAll();
+
+echo "Fetching all authors:" . PHP_EOL;
+foreach ($authors as $index => $author) {
+    echo "{$index} {$author->firstName} {$author->lastName}" . PHP_EOL;
+}
+```
+
+### Condition
+```php
 // find author by ID
 $foundAuthor = $mapper->authors[(string)$author->_id]->fetch();
 echo "find by id('{$author->_id}') {$foundAuthor->firstName} {$foundAuthor->lastName}".PHP_EOL;
+```
 
+### Removing
+```php
 $mapper->authors->remove($author);
 $mapper->flush();
 
