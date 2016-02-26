@@ -1,6 +1,6 @@
 {
     "name": "respect/structural",
-    "description": "Fluent NoSql Toolkit",
+    "description": "Fluent Resorce Toolkit",
     "version": "0.1.0-dev",
     "type": "library",
     "time": "2012-05-05 19:11:23",
@@ -10,6 +10,10 @@
         {
             "name": "Alexandre Gomes Gaigalas",
             "email": "alexandre@gaigalas.net"
+        },
+        {
+            "name": "Antonio Spinelli",
+            "email": "tonicospinelli85@gmail.com"
         },
         {
             "name": "Claudson Oliveira",
@@ -34,10 +38,6 @@
         {
             "name": "Thiago Rigo",
             "email": "thiagophx@gmail.com"
-        },
-        {
-            "name": "Antonio Spinelli",
-            "email": "tonicospinelli85@gmail.com"
         }
     ],
     "require": {
