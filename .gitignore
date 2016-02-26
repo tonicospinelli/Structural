@@ -21,5 +21,6 @@
 /pirum
 /library/Respect/Data
 /nbproject
-/tests/reports
+/build/coverage
 /vendor
+/phpunit.xml
