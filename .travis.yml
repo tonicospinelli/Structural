@@ -14,9 +14,11 @@ matrix:
   allow_failures:
     - php: 7.0
 
-before_script:
+install:
   - yes '' | pecl -q install -f ${MONGO_EXTENSION}-stable
-  - php --ri ${MONGO_EXTENSION}
+  - php --ri ${MONGO_EXTENSION} 
+
+before_script:
   - composer self-update
   - composer update --dev --no-interaction --prefer-dist
 
