@@ -13,6 +13,7 @@ matrix:
   fast_finish: true
   allow_failures:
     - php: 7.0
+      env: MONGO_EXTENSION=mongo
 
 install:
   - yes '' | pecl -q install -f ${MONGO_EXTENSION}-stable
