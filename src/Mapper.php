@@ -256,7 +256,7 @@ class Mapper extends AbstractMapper implements
     protected function fetchMulti(Collection $collection, $statement)
     {
         $entityInstance = null;
-        $row = $statement->fetch(PDO::FETCH_NUM);
+        $row = $this->driver->fetch($statement);
 
         if (!$row) {
             return false;
@@ -269,9 +269,8 @@ class Mapper extends AbstractMapper implements
         return $entities;
     }
 
-    protected function createEntities(
-        $row, $statement, Collection $collection
-    ) {
+    protected function createEntities($row, $statement, Collection $collection)
+    {
 
         $entities = new SplObjectStorage();
         $entitiesInstances = $this->buildEntitiesInstances(
@@ -297,9 +296,7 @@ class Mapper extends AbstractMapper implements
         return $entities;
     }
 
-    protected function buildEntitiesInstances(
-        Collection $collection, SplObjectStorage $entities
-    ) {
+    protected function buildEntitiesInstances(Collection $collection, SplObjectStorage $entities) {
         $entitiesInstances = array();
 
         foreach (CollectionIterator::recursive($collection) as $c) {

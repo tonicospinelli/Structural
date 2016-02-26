@@ -21,10 +21,26 @@ interface Driver
      */
     public function find($collection, array $query = array());
 
+    /**
+     * @param string $collection
+     * @param object $document
+     * @return void
+     */
     public function insert($collection, $document);
 
+    /**
+     * @param string $collection
+     * @param array $criteria
+     * @param object $document
+     * @return void
+     */
     public function update($collection, $criteria, $document);
 
+    /**
+     * @param string $collection
+     * @param array $criteria
+     * @return void
+     */
     public function remove($collection, $criteria);
 
     /**

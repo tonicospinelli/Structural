@@ -13,11 +13,15 @@ class Driver implements BaseDriver
      */
     private $connection;
 
+    /**
+     * @var \MongoDB
+     */
     private $database;
 
     /**
      * Driver constructor.
      * @param \MongoClient $connection
+     * @param string $database
      */
     public function __construct(\MongoClient $connection, $database)
     {
@@ -58,11 +62,19 @@ class Driver implements BaseDriver
         return $this->getDatabase()->{$collection}->find($query);
     }
 
+    /**
+     * @param Collection $collection
+     * @return array
+     */
     public function generateQuery(Collection $collection)
     {
         return $this->parseConditions($collection);
     }
 
+    /**
+     * @param Collection $collection
+     * @return array
+     */
     protected function parseConditions(Collection $collection)
     {
         $allCollections = CollectionIterator::recursive($collection);
@@ -77,12 +89,17 @@ class Driver implements BaseDriver
         return $condition;
     }
 
+    /**
+     * @param Collection $collection
+     * @param bool|false $prefix
+     * @return array
+     */
     protected function getConditionArray(Collection $collection, $prefix = false)
     {
         $condition = $collection->getCondition();
 
         if (!is_array($condition)) {
-            $condition = array('_id' => new \MongoId($condition));
+            $condition = array('_id' => $this->createMongoId($condition));
         }
 
         if ($prefix)
@@ -91,6 +108,11 @@ class Driver implements BaseDriver
         return $condition;
     }
 
+    /**
+     * @param array $array
+     * @param string $prefix
+     * @return array
+     */
     protected static function prefixArrayKeys(array $array, $prefix)
     {
         $new = array();
@@ -101,6 +123,23 @@ class Driver implements BaseDriver
         return $new;
     }
 
+    /**
+     * @param int|string $id
+     * @return \MongoId|\MongoInt32
+     */
+    protected function createMongoId($id)
+    {
+        if (is_int($id)) {
+            return new \MongoInt32($id);
+        }
+        return new \MongoId($id);
+    }
+
+    /**
+     * @param Collection $collection
+     * @param $document
+     * @return void
+     */
     public function insert($collection, $document)
     {
         $this->getDatabase()->{$collection}->insert($document);
