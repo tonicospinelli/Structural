@@ -15,9 +15,17 @@ class DriverTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        if (!class_exists('\MongoClient')) {
+            $this->markTestSkipped('missing legacy mongo extension driver');
+        }
+
         parent::setUp();
-        $client = $this->getMock(\MongoClient::class);
+        $client = $this
+            ->getMockBuilder(\MongoClient::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->driver = new Driver($client, 'collection');
+
     }
 
     public function testDriverShouldAnInstanceOfDriverInterface()
