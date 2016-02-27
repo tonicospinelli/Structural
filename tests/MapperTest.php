@@ -4,6 +4,7 @@ namespace Respect\Structural\Tests\Unit;
 
 use Respect\Structural\Driver;
 use Respect\Structural\Mapper;
+use Respect\Structural\QueryBuilder;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,13 +30,16 @@ class MapperTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdateADocument($author)
     {
+        $queryBuilder = $this->getMock(QueryBuilder::class);
+        $queryBuilder->expects($this->once())->method('assemble')->willReturn(['id' => 1]);
+
         $driver = $this->getMockForAbstractClass(Driver::class);
         $driver->expects($this->once())->method('update');
         $driver->expects($this->once())->method('fetch')->willReturnCallback(function (\Iterator $statement) {
             return $statement->current();
         });
         $driver->expects($this->once())->method('find')->willReturn((new \ArrayObject([$author]))->getIterator());
-        $driver->expects($this->once())->method('generateQuery')->willReturn(['id' => 1]);
+        $driver->expects($this->once())->method('generateQuery')->willReturn($queryBuilder);
 
         $mapper = new Mapper($driver);
 
@@ -53,13 +57,16 @@ class MapperTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveADocument($author)
     {
+        $queryBuilder = $this->getMock(QueryBuilder::class);
+        $queryBuilder->expects($this->once())->method('assemble')->willReturn(['id' => 1]);
+
         $driver = $this->getMockForAbstractClass(Driver::class);
         $driver->expects($this->once())->method('remove');
         $driver->expects($this->once())->method('fetch')->willReturnCallback(function (\Iterator $statement) {
             return $statement->current();
         });
         $driver->expects($this->once())->method('find')->willReturn((new \ArrayObject([$author]))->getIterator());
-        $driver->expects($this->once())->method('generateQuery')->willReturn(['id' => 1]);
+        $driver->expects($this->once())->method('generateQuery')->willReturn($queryBuilder);
 
         $mapper = new Mapper($driver);
 

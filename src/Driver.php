@@ -51,7 +51,7 @@ interface Driver
     /**
      * @param Collection $collection
      *
-     * @return array
+     * @return QueryBuilder
      */
     public function generateQuery(Collection $collection);
 }

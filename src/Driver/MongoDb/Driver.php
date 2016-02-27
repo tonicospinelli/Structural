@@ -50,9 +50,7 @@ class Driver implements BaseDriver
     }
 
     /**
-     * @param \Iterator $cursor
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function fetch(\Iterator $cursor)
     {
@@ -66,10 +64,7 @@ class Driver implements BaseDriver
     }
 
     /**
-     * @param array $collection
-     * @param array $query
-     *
-     * @return \Iterator
+     * {@inheritdoc}
      */
     public function find($collection, array $query = [])
     {
@@ -81,78 +76,15 @@ class Driver implements BaseDriver
     }
 
     /**
-     * @param Collection $collection
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function generateQuery(Collection $collection)
     {
-        return $this->parseConditions($collection);
+        return new QueryBuilder($collection);
     }
 
     /**
-     * @param Collection $collection
-     *
-     * @return array
-     */
-    protected function parseConditions(Collection $collection)
-    {
-        $allCollections = CollectionIterator::recursive($collection);
-        $allCollections = iterator_to_array($allCollections);
-        $allCollections = array_slice($allCollections, 1);
-
-        $condition = $this->getConditionArray($collection);
-
-        foreach ($allCollections as $coll) {
-            $condition += $this->getConditionArray($coll, true);
-        }
-
-        return $condition;
-    }
-
-    /**
-     * @param Collection $collection
-     * @param bool|false $prefix
-     *
-     * @return array
-     */
-    protected function getConditionArray(Collection $collection, $prefix = false)
-    {
-        $condition = $collection->getCondition();
-
-        if (!is_array($condition)) {
-            $condition = ['_id' => new ObjectID($condition)];
-        }
-
-        if ($prefix) {
-            $condition = static::prefixArrayKeys($condition, $collection->getName() . '.');
-        }
-
-        return $condition;
-    }
-
-    /**
-     * @param array  $array
-     * @param string $prefix
-     *
-     * @return array
-     */
-    protected static function prefixArrayKeys(array $array, $prefix)
-    {
-        $new = [];
-
-        foreach ($array as $key => $value) {
-            $new["{$prefix}{$key}"] = $value;
-        }
-
-        return $new;
-    }
-
-    /**
-     * @param Collection $collection
-     * @param $document
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function insert($collection, $document)
     {
@@ -160,14 +92,16 @@ class Driver implements BaseDriver
         $document->_id = $result->getInsertedId();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function update($collection, $criteria, $document)
     {
         $this->getDatabase()->selectCollection($collection)->updateOne($criteria, ['$set' => $document]);
     }
 
     /**
-     * @param string $collection
-     * @param array  $criteria
+     * {@inheritdoc}
      */
     public function remove($collection, $criteria)
     {

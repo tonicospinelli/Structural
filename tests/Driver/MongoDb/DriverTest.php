@@ -41,18 +41,18 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     public function testGenerateQueryShouldReturnSimpleFind()
     {
         $result = $this->driver->generateQuery(Collection::my_coll());
-        $this->assertEquals([], $result);
+        $this->assertEquals([], $result->assemble());
     }
 
     public function testGenerateQueryShouldReturnSimpleFindById()
     {
         $result = $this->driver->generateQuery(Collection::my_coll('56cf5c943f90a847400041ac'));
-        $this->assertEquals(['_id' => new ObjectID('56cf5c943f90a847400041ac')], $result);
+        $this->assertEquals(['_id' => new ObjectID('56cf5c943f90a847400041ac')], $result->assemble());
     }
 
     public function testGenerateQueryShouldUsePartialResultSets()
     {
         $result = $this->driver->generateQuery(Collection::article()->author['56cf5c943f90a847400041ac']);
-        $this->assertEquals(['author._id' => new ObjectID('56cf5c943f90a847400041ac')], $result);
+        $this->assertEquals(['author._id' => new ObjectID('56cf5c943f90a847400041ac')], $result->assemble());
     }
 }

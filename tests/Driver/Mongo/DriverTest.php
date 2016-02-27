@@ -35,18 +35,19 @@ class DriverTest extends \PHPUnit_Framework_TestCase
     public function testGenerateQueryShouldReturnSimpleFind()
     {
         $result = $this->driver->generateQuery(Collection::my_coll());
-        $this->assertEquals([], $result);
+        $this->assertInstanceOf(BaseDriver\Mongo\QueryBuilder::class, $result);
+        $this->assertEquals([], $result->assemble());
     }
 
     public function testGenerateQueryShouldReturnSimpleFindById()
     {
         $result = $this->driver->generateQuery(Collection::my_coll(42));
-        $this->assertEquals(['_id' => new \MongoInt32(42)], $result);
+        $this->assertEquals(['_id' => new \MongoInt32(42)], $result->assemble());
     }
 
     public function testGenerateQueryShouldUsePartialResultSets()
     {
         $result = $this->driver->generateQuery(Collection::article()->author['56cf5c943f90a847400041ac']);
-        $this->assertEquals(['author._id' => new \MongoId('56cf5c943f90a847400041ac')], $result);
+        $this->assertEquals(['author._id' => new \MongoId('56cf5c943f90a847400041ac')], $result->assemble());
     }
 }

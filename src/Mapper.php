@@ -179,11 +179,15 @@ class Mapper extends AbstractMapper implements
 
         $withExtraList = (array)$withExtra;
 
-        $withExtraList = array_merge($withExtraList, $query);
+        $withExtraList = array_merge($withExtraList, $query->assemble());
 
         return $this->driver->find($collection->getName(), $withExtraList);
     }
 
+    /**
+     * @param Collection $collection
+     * @return QueryBuilder
+     */
     protected function generateQuery(Collection $collection)
     {
         return $this->driver->generateQuery($collection);
