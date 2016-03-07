@@ -387,4 +387,12 @@ class Mapper extends AbstractMapper implements
     {
         return $collection->have('filters');
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStyle()
+    {
+        return $this->driver->getStyle();
+    }
 }

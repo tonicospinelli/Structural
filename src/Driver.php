@@ -3,6 +3,7 @@
 namespace Respect\Structural;
 
 use Respect\Data\Collections\Collection;
+use Respect\Data\Styles\Stylable;
 
 interface Driver
 {
@@ -10,6 +11,18 @@ interface Driver
      * @return mixed
      */
     public function getConnection();
+
+    /**
+     * @return Stylable
+     */
+    public function getStyle();
+
+    /**
+     * @param Stylable $style
+     *
+     * @return Driver
+     */
+    public function setStyle(Stylable $style);
 
     /**
      * @param \Iterator $cursor

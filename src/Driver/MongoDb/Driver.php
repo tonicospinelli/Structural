@@ -3,6 +3,7 @@
 namespace Respect\Structural\Driver\MongoDb;
 
 use Respect\Data\Collections\Collection;
+use Respect\Data\Styles\Stylable;
 use Respect\Structural\Driver as BaseDriver;
 use Respect\Structural\Driver\Exception as DriverException;
 
@@ -75,6 +76,22 @@ class Driver implements BaseDriver
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    /**
+     * @return Stylable
+     */
+    public function getStyle()
+    {
+        return $this->getConnection()->getStyle();
+    }
+
+    /**
+     * @return Stylable
+     */
+    public function setStyle(Stylable $style)
+    {
+        return $this->getConnection()->setStyle($style);
     }
 
     /**

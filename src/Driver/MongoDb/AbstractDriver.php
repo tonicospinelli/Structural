@@ -4,10 +4,16 @@ namespace Respect\Structural\Driver\MongoDb;
 
 use Respect\Data\CollectionIterator;
 use Respect\Data\Collections\Collection;
+use Respect\Data\Styles\Stylable;
 use Respect\Structural\Driver as BaseDriver;
 
 abstract class AbstractDriver implements BaseDriver
 {
+    /**
+     * @var Stylable
+     */
+    protected $style;
+
     /**
      * @return mixed
      */
@@ -19,6 +25,28 @@ abstract class AbstractDriver implements BaseDriver
      * @return mixed
      */
     abstract public function createObjectId($id);
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStyle()
+    {
+        if (is_null($this->style)) {
+            $this->style = new Style();
+        }
+
+        return $this->style;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStyle(Stylable $style)
+    {
+        $this->style = $style;
+
+        return $this;
+    }
 
     /**
      * @param Collection $collection

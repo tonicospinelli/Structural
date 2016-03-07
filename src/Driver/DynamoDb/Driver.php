@@ -8,6 +8,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Respect\Data\CollectionIterator;
 use Respect\Data\Collections\Collection;
+use Respect\Data\Styles\Stylable;
 use Respect\Structural\Driver as BaseDriver;
 
 class Driver implements BaseDriver
@@ -28,6 +29,11 @@ class Driver implements BaseDriver
     private $uuid;
 
     /**
+     * @var Style
+     */
+    protected $style;
+
+    /**
      * Driver constructor.
      *
      * @param \Aws\DynamoDb\DynamoDbClient $connection
@@ -45,6 +51,28 @@ class Driver implements BaseDriver
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStyle()
+    {
+        if (is_null($this->style)) {
+            $this->style = new Style();
+        }
+
+        return $this->style;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStyle(Stylable $style)
+    {
+        $this->style = $style;
+
+        return $this;
     }
 
     /**
