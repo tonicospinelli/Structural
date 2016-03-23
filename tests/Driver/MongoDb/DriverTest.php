@@ -1,6 +1,6 @@
 <?php
 
-namespace Respect\Structural\tests\Driver\MongoDb;
+namespace Respect\Structural\Tests\Driver\MongoDb;
 
 use Respect\Data\Collections\Collection;
 use Respect\Structural\Driver\MongoDb\Driver;

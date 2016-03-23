@@ -11,11 +11,14 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testInsertANewDocument()
     {
         $style = $this->getMockForAbstractClass(Stylable::class);
+        $style->expects($this->once())->method('identifier')->willReturn('id');
 
         $driver = $this->getMockForAbstractClass(Driver::class);
         $driver->expects($this->once())->method('insert')->willReturnCallback(function ($collection, $document) {
             $document->id = 1;
         });
+        $driver->expects($this->once())->method('getStyle')->willReturn($style);
+
 
         $mapper = new Mapper($driver);
 

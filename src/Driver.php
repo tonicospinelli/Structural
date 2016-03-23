@@ -43,7 +43,7 @@ interface Driver
      * @param string $collection
      * @param object $document
      *
-     * @return void
+     * @return string Returns the inserted id for current document.
      */
     public function insert($collection, $document);
 
@@ -70,4 +70,10 @@ interface Driver
      * @return array
      */
     public function generateQuery(Collection $collection);
+
+    /**
+     * @param string|int $id
+     * @return string
+     */
+    public function createObjectId($id = null);
 }

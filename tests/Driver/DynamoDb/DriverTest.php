@@ -129,4 +129,11 @@ class DriverTest extends TestCase
             ]
         ];
     }
+
+    public function provideDataToInsert()
+    {
+        return [
+            'data with id' => [(object) ['name' => 'Test', '_id' => uniqid()]],
+        ];
+    }
 }

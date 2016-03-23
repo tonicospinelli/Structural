@@ -144,4 +144,14 @@ class Driver implements BaseDriver
     {
         $this->getConnection()->remove($collection, $criteria);
     }
+
+    /**
+     * @param string $id
+     * @return string
+     */
+    public function createObjectId($id = null)
+    {
+        return $this->getConnection()->createObjectId($id);
+    }
+
 }

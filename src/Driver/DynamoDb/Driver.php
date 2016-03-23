@@ -4,7 +4,6 @@ namespace Respect\Structural\Driver\DynamoDb;
 
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Respect\Data\CollectionIterator;
 use Respect\Data\Collections\Collection;
@@ -73,6 +72,14 @@ class Driver implements BaseDriver
         $this->style = $style;
 
         return $this;
+    }
+
+    public function createObjectId($id = null)
+    {
+        if (is_null($id)) {
+            $id = $this->uuid->uuid4()->toString();
+        }
+        return $id;
     }
 
     /**
@@ -154,7 +161,8 @@ class Driver implements BaseDriver
         $condition = $collection->getCondition();
 
         if (!is_array($condition)) {
-            $condition = ['_id' => $condition];
+            $identifier = $this->getStyle()->identifier($collection->getName());
+            $condition = [$identifier => $condition];
         }
 
         $conditions = [];
@@ -174,8 +182,7 @@ class Driver implements BaseDriver
     }
 
     /**
-     * @param Collection $collection
-     * @param $document
+     * {@inheritdoc}
      */
     public function insert($collection, $document)
     {
@@ -187,12 +194,15 @@ class Driver implements BaseDriver
         ];
 
         $this->getConnection()->putItem($args);
+
+        $identifierName = $this->getStyle()->identifier($collection);
+        return $document->{$identifierName};
     }
 
     /**
      * @param Collection $collection
-     * @param $criteria
-     * @param $document
+     * @param            $criteria
+     * @param            $document
      */
     public function update($collection, $criteria, $document)
     {
@@ -207,7 +217,7 @@ class Driver implements BaseDriver
 
     /**
      * @param Collection $collection
-     * @param $criteria
+     * @param            $criteria
      */
     public function remove($collection, $criteria)
     {

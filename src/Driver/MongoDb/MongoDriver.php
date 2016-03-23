@@ -2,8 +2,6 @@
 
 namespace Respect\Structural\Driver\MongoDb;
 
-use Respect\Data\Collections\Collection;
-
 class MongoDriver extends AbstractDriver
 {
     /**
@@ -73,7 +71,7 @@ class MongoDriver extends AbstractDriver
      *
      * @return \MongoId|\MongoInt32
      */
-    public function createObjectId($id)
+    public function createObjectId($id = null)
     {
         if (is_int($id)) {
             return new \MongoInt32($id);
@@ -83,14 +81,13 @@ class MongoDriver extends AbstractDriver
     }
 
     /**
-     * @param Collection $collection
-     * @param $document
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function insert($collection, $document)
     {
         $this->getDatabase()->selectCollection($collection)->insert($document);
+        $identifierName = $this->getStyle()->identifier($collection);
+        return $document->{$identifierName};
     }
 
     public function update($collection, $criteria, $document)

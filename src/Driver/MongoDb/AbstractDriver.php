@@ -20,13 +20,6 @@ abstract class AbstractDriver implements BaseDriver
     abstract public function getDatabase();
 
     /**
-     * @param int|string $id
-     *
-     * @return mixed
-     */
-    abstract public function createObjectId($id);
-
-    /**
      * {@inheritdoc}
      */
     public function getStyle()

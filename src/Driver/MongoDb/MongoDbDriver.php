@@ -43,7 +43,7 @@ class MongoDbDriver extends AbstractDriver
      *
      * @return ObjectID
      */
-    public function createObjectId($id)
+    public function createObjectId($id = null)
     {
         return new ObjectID($id);
     }
@@ -88,15 +88,12 @@ class MongoDbDriver extends AbstractDriver
     }
 
     /**
-     * @param string $collection
-     * @param $document
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function insert($collection, $document)
     {
         $result = $this->getDatabase()->selectCollection($collection)->insertOne($document);
-        $document->_id = $result->getInsertedId();
+        return $result->getInsertedId();
     }
 
     public function update($collection, $criteria, $document)

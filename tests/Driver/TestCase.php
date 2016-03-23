@@ -77,6 +77,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     abstract public function provideCollectionAndSearchShouldRetrieveFilledResult();
 
     /**
+     * @return array
+     */
+    abstract public function provideDataToInsert();
+
+    /**
      * @param string $method
      * @param mixed  $result
      *
@@ -185,14 +190,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $result);
     }
 
-    public function testInsertDataShouldRetrieveId()
+    /**
+     * @param $document
+     * @dataProvider provideDataToInsert
+     */
+    public function testInsertDataShouldRetrieveId($document)
     {
-        $data = new \stdClass();
-        $data->name = 'Test';
+        $id = $this->createDriver($this->getMockConnectionInsertOne())->insert('author', $document);
 
-        $this->createDriver($this->getMockConnectionInsertOne())->insert('author', $data);
-
-        $this->assertObjectHasAttribute('_id', $data);
+        $this->assertNotEmpty($id);
     }
 
     public function testUpdateDataShouldWithSuccess()

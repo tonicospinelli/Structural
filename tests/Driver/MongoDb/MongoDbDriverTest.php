@@ -182,4 +182,11 @@ class MongoDbDriverTest extends TestCase
             ],
         ];
     }
+    public function provideDataToInsert()
+    {
+        return [
+            'data without id' => [(object) ['name' => 'Test']],
+        ];
+    }
+
 }
