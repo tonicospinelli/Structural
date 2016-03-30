@@ -3,10 +3,10 @@
 namespace Respect\Structural\Tests\Driver\Mongo;
 
 use Respect\Data\Collections\Collection;
-use Respect\Structural\Driver\MongoDb\MongoDriver;
+use Respect\Structural\Driver\Mongo\Driver;
 use Respect\Structural\Tests\Driver\TestCase;
 
-class MongoDriverTest extends TestCase
+class DriverTest extends TestCase
 {
     protected function setUp()
     {
@@ -23,7 +23,7 @@ class MongoDriverTest extends TestCase
             $connection = $this->createConnection();
         }
 
-        return new MongoDriver($connection, 'database');
+        return new Driver($connection, 'database');
     }
 
     public function getConnectionInterface()

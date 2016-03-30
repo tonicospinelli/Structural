@@ -1,11 +1,18 @@
 <?php
 
-namespace Respect\Structural\Driver\MongoDb;
+namespace Respect\Structural\Driver\Mongo;
 
 use Respect\Data\Collections\Collection;
+use Respect\Data\Styles\Stylable;
+use Respect\Structural\Driver as BaseDriver;
 
-class MongoDriver extends AbstractDriver
+class Driver implements BaseDriver
 {
+    /**
+     * @var Stylable
+     */
+    protected $style;
+
     /**
      * @var \MongoClient
      */
@@ -17,15 +24,43 @@ class MongoDriver extends AbstractDriver
     private $database;
 
     /**
+     * @var Mapping
+     */
+    private $mapping;
+
+    /**
      * Driver constructor.
      *
      * @param \MongoClient $connection
-     * @param string       $database
+     * @param string $database
      */
     public function __construct(\MongoClient $connection, $database)
     {
         $this->connection = $connection;
         $this->database = $connection->selectDB($database);
+        $this->mapping = new Mapping();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStyle()
+    {
+        if (is_null($this->style)) {
+            $this->style = new Style();
+        }
+
+        return $this->style;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStyle(Stylable $style)
+    {
+        $this->style = $style;
+
+        return $this;
     }
 
     /**
@@ -69,20 +104,6 @@ class MongoDriver extends AbstractDriver
     }
 
     /**
-     * @param int|string $id
-     *
-     * @return \MongoId|\MongoInt32
-     */
-    public function createObjectId($id)
-    {
-        if (is_int($id)) {
-            return new \MongoInt32($id);
-        }
-
-        return new \MongoId($id);
-    }
-
-    /**
      * @param Collection $collection
      * @param $document
      *
@@ -102,4 +123,10 @@ class MongoDriver extends AbstractDriver
     {
         $this->getDatabase()->selectCollection($collection)->remove($criteria);
     }
+
+    public function generateQuery(Collection $collection)
+    {
+        return $this->mapping->generateQuery($collection);
+    }
+
 }
