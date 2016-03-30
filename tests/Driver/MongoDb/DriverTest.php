@@ -5,12 +5,13 @@ namespace Respect\Structural\Tests\Driver\MongoDb;
 use MongoDB\BSON\ObjectID;
 use MongoDB\Client;
 use MongoDB\Database;
+use MongoDB\Driver\Cursor;
 use MongoDB\InsertOneResult;
 use Respect\Data\Collections\Collection;
-use Respect\Structural\Driver\MongoDb\MongoDbDriver;
+use Respect\Structural\Driver\MongoDb\Driver;
 use Respect\Structural\Tests\Driver\TestCase;
 
-class MongoDbDriverTest extends TestCase
+class DriverTest extends TestCase
 {
     protected function setUp()
     {
@@ -31,7 +32,7 @@ class MongoDbDriverTest extends TestCase
             $connection = $this->createConnection();
         }
 
-        return new MongoDbDriver($connection, 'database');
+        return new Driver($connection, 'database');
     }
 
     public function getConnectionInterface()
@@ -173,12 +174,14 @@ class MongoDbDriverTest extends TestCase
             'simple result' => [
                 'authors',
                 ['_id' => 1],
-                new \ArrayIterator([
-                    [
-                        '_id' => 1,
-                        'name' => 'Test'
-                    ]
-                ])
+                new \IteratorIterator(
+                    new \ArrayIterator([
+                        [
+                            '_id' => 1,
+                            'name' => 'Test'
+                        ]
+                    ])
+                )
             ],
         ];
     }

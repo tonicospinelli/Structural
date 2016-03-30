@@ -2,75 +2,108 @@
 
 namespace Respect\Structural\Driver\MongoDb;
 
+use MongoDB\BSON\ObjectID;
+use MongoDB\Client;
+use MongoDB\Database;
 use Respect\Data\Collections\Collection;
+use Respect\Data\Styles\Stylable;
 use Respect\Structural\Driver as BaseDriver;
-use Respect\Structural\Driver\Exception as DriverException;
 
 class Driver implements BaseDriver
 {
     /**
-     * @var BaseDriver
+     * @var Stylable
+     */
+    protected $style;
+
+    /**
+     * @var Client
      */
     private $connection;
 
-    protected function __construct(BaseDriver $connection)
+    /**
+     * @var Database
+     */
+    private $database;
+
+    /**
+     * @var Mapping
+     */
+    private $mapping;
+
+    /**
+     * Driver constructor.
+     *
+     * @param Client $connection
+     * @param string $database
+     */
+    public function __construct(Client $connection, $database)
     {
         $this->connection = $connection;
+        $this->database = $connection->selectDatabase($database);
+        $this->mapping = new Mapping();
     }
 
     /**
-     * @param string $database
-     * @param string $server
-     * @param array  $options
-     * @param array  $driverOptions
-     *
-     * @return Driver
-     *
-     * @throws DriverException
+     * @return Mapping
      */
-    public static function factoryLegacy(
-        $database,
-        $server = 'mongodb://localhost:27017',
-        array $options = ['connect' => false],
-        array $driverOptions = []
-    ) {
-        if (!extension_loaded('mongo')) {
-            throw DriverException::extensionNotLoaded('mongo');
+    public function getMapping()
+    {
+        return $this->mapping;
+    }
+
+    /**
+     * @param Mapping $mapping
+     * @return Driver
+     */
+    public function setMapping($mapping)
+    {
+        $this->mapping = $mapping;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStyle()
+    {
+        if (is_null($this->style)) {
+            $this->style = new Style();
         }
 
-        $client = new \MongoClient($server, $options, $driverOptions);
-        $driver = new MongoDriver($client, $database);
-
-        return new self($driver);
+        return $this->style;
     }
 
     /**
-     * @param string $database
-     * @param string $uri
-     * @param array  $uriOptions
-     * @param array  $driverOptions
-     *
-     * @return Driver
-     *
-     * @throws DriverException
+     * {@inheritdoc}
      */
-    public static function factory(
-        $database,
-        $uri = 'mongodb://localhost:27017',
-        array $uriOptions = [],
-        array $driverOptions = []
-    ) {
-        if (!extension_loaded('mongodb')) {
-            throw DriverException::extensionNotLoaded('mongodb');
-        }
-        $client = new \MongoDB\Client($uri, $uriOptions, $driverOptions);
-        $driver = new MongoDbDriver($client, $database);
+    public function setStyle(Stylable $style)
+    {
+        $this->style = $style;
 
-        return new self($driver);
+        return $this;
     }
 
     /**
-     * @return Driver
+     * @return \MongoDB\Database
+     */
+    public function getDatabase()
+    {
+        return $this->database;
+    }
+
+    /**
+     * @param int|string $id
+     *
+     * @return ObjectID
+     */
+    public function createObjectId($id = null)
+    {
+        return new ObjectID($id);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getConnection()
     {
@@ -82,7 +115,13 @@ class Driver implements BaseDriver
      */
     public function fetch(\Iterator $cursor)
     {
-        return $this->getConnection()->fetch($cursor);
+        $data = null;
+        if ($cursor->valid()) {
+            $data = $cursor->current();
+            $cursor->next();
+        }
+
+        return $data;
     }
 
     /**
@@ -90,26 +129,21 @@ class Driver implements BaseDriver
      */
     public function find($collection, array $query = [])
     {
-        return $this->getConnection()->find($collection, $query);
+        $cursor = $this->getDatabase()->selectCollection($collection)->find($query);
+        $iterator = new \IteratorIterator($cursor);
+        $iterator->rewind();
+
+        return $iterator;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateQuery(Collection $collection)
-    {
-        return $this->getConnection()->generateQuery($collection);
-    }
-
-    /**
-     * @param Collection $collection
-     * @param $document
-     *
-     * @return void
-     */
     public function insert($collection, $document)
     {
-        $this->getConnection()->insert($collection, $document);
+        $result = $this->getDatabase()->selectCollection($collection)->insertOne($document);
+        $identifier = $this->getStyle()->identifier($collection);
+        $document->{$identifier} = $result->getInsertedId();
     }
 
     /**
@@ -117,7 +151,7 @@ class Driver implements BaseDriver
      */
     public function update($collection, $criteria, $document)
     {
-        $this->getConnection()->update($collection, $criteria, $document);
+        $this->getDatabase()->selectCollection($collection)->updateOne($criteria, ['$set' => $document]);
     }
 
     /**
@@ -125,6 +159,14 @@ class Driver implements BaseDriver
      */
     public function remove($collection, $criteria)
     {
-        $this->getConnection()->remove($collection, $criteria);
+        $this->getDatabase()->selectCollection($collection)->deleteOne($criteria);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateQuery(Collection $collection)
+    {
+        return $this->getMapping()->generateQuery($collection);
     }
 }

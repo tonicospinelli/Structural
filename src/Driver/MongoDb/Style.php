@@ -10,4 +10,10 @@ class Style extends Standard
     {
         return '_' . parent::identifier($name);
     }
+
+    public function convertToMongoDate(\DateTime $dateTime)
+    {
+        return new \MongoDate($dateTime->getTimestamp());
+    }
+    
 }

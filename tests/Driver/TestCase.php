@@ -134,7 +134,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         $driver = $this->createDriver($this->getMockConnectionRetrieveEmptyResult());
 
-        $this->assertEmpty($driver->find($collection, $search));
+        $this->assertFalse($driver->find($collection, $search)->valid());
     }
 
     /**

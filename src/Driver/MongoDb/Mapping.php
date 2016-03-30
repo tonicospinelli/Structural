@@ -2,23 +2,12 @@
 
 namespace Respect\Structural\Driver\MongoDb;
 
+use MongoDB\BSON\ObjectID;
 use Respect\Data\CollectionIterator;
 use Respect\Data\Collections\Collection;
-use Respect\Structural\Driver as BaseDriver;
 
-abstract class AbstractDriver implements BaseDriver
+class Mapping
 {
-    /**
-     * @return mixed
-     */
-    abstract public function getDatabase();
-
-    /**
-     * @param int|string $id
-     *
-     * @return mixed
-     */
-    abstract public function createObjectId($id);
 
     /**
      * @param Collection $collection
@@ -72,7 +61,7 @@ abstract class AbstractDriver implements BaseDriver
     }
 
     /**
-     * @param array  $array
+     * @param array $array
      * @param string $prefix
      *
      * @return array
@@ -86,5 +75,14 @@ abstract class AbstractDriver implements BaseDriver
                 }, array_keys($array)),
             $array
         );
+    }
+
+    /**
+     * @param int|string $id
+     * @return ObjectID
+     */
+    public function createObjectId($id)
+    {
+        return new ObjectID($id);
     }
 }
